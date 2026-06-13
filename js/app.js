@@ -374,6 +374,17 @@ function formatCopyright(text) {
   return `<strong style="font-weight: 600; color: #666;">${escapeHtml(text)}</strong>`;
 }
 
+// ===== 隐藏加载遮罩 =====
+function hideLoadingOverlay() {
+  const overlay = document.getElementById("loadingOverlay");
+  if (overlay) {
+    overlay.classList.add("hidden");
+    setTimeout(() => {
+      overlay.style.display = "none";
+    }, 300);
+  }
+}
+
 // ===== 初始化 =====
 document.addEventListener("DOMContentLoaded", function () {
   // 1. 同步渲染（使用静态数据，保证首屏快速显示）
@@ -388,7 +399,10 @@ document.addEventListener("DOMContentLoaded", function () {
   renderAboutPage();
 
   // 2. 异步加载实时数据（后台静默更新，不阻塞渲染）
-  loadProductsDataAsync();
+  loadProductsDataAsync().then(() => {
+    // 数据加载完成后隐藏加载提示
+    hideLoadingOverlay();
+  });
 
   // 返回顶部按钮显示/隐藏
   const pageContainer = document.getElementById("pageContainer");

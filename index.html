@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">正在加载...</div>
+    </div>
+
     <!-- 阻止微信左滑返回 -->
     <script>
       (function () {
@@ -29,11 +35,12 @@
                 var diffX = moveX - startX;
                 var diffY = moveY - startY;
 
-                // 如果水平滑动距离大于垂直滑动，且是向右滑（从左边缘开始）
+                // 只在明显向右滑动时阻止（从左边缘开始）
+                // 不阻止纯上下滚动
                 if (
-                  Math.abs(diffX) > Math.abs(diffY) &&
                   diffX > 50 &&
-                  startX < 50
+                  startX < 50 &&
+                  Math.abs(diffX) > Math.abs(diffY) * 1.5
                 ) {
                   moveEvent.preventDefault();
                 }
