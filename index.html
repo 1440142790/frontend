@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>国标电子烟产品介绍</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- 阻止微信左滑返回 -->
+    <script>
+      (function () {
+        // 阻止左滑返回的默认行为
+        document.addEventListener(
+          "touchstart",
+          function (e) {
+            if (e.touches.length > 1) return;
+            var startX = e.touches[0].clientX;
+            var startY = e.touches[0].clientY;
+
+            document.addEventListener(
+              "touchmove",
+              function onMove(moveEvent) {
+                var moveX = moveEvent.touches[0].clientX;
+                var moveY = moveEvent.touches[0].clientY;
+                var diffX = moveX - startX;
+                var diffY = moveY - startY;
+
+                // 如果水平滑动距离大于垂直滑动，且是向右滑（从左边缘开始）
+                if (
+                  Math.abs(diffX) > Math.abs(diffY) &&
+                  diffX > 50 &&
+                  startX < 50
+                ) {
+                  moveEvent.preventDefault();
+                }
+              },
+              { passive: false },
+            );
+          },
+          { passive: true },
+        );
+
+        // 阻止历史记录操作
+        history.pushState(null, null, location.href);
+        window.addEventListener("popstate", function () {
+          history.pushState(null, null, location.href);
+        });
+      })();
+    </script>
+
+    <!-- 主内容区 -->
+    <div class="page-container" id="pageContainer">
+      <!-- 首页 -->
+      <div class="tab-page active" id="page-home">
+        <!-- PC端顶部轮播图 -->
+        <div class="swiper-container pc-swiper" id="homeSwiper">
+          <div class="swiper-wrapper" id="swiperWrapper">
+            <!-- 轮播图由JS生成 -->
+          </div>
+          <div class="swiper-pagination" id="swiperPagination"></div>
+        </div>
+
+        <!-- 公告栏 -->
+        <div class="notice-bar" id="noticeBar">
+          <div class="notice-icon">🔊</div>
+          <div class="notice-content">
+            <div class="notice-scroll" id="noticeScroll"></div>
+          </div>
+        </div>
+
+        <!-- PC端布局：左侧分类 + 右侧热门推荐 -->
+        <div class="pc-layout">
+          <!-- PC端左侧品牌栏 -->
+          <div class="pc-sidebar" id="pcSidebar">
+            <div class="pc-brand-title">品牌分类</div>
+            <div class="pc-brand-list" id="pcBrandList">
+              <div
+                class="pc-brand-item active"
+                data-brand="all"
+                onclick="selectCategoryBrand('all')"
+              >
+                全部商品
+              </div>
+            </div>
+          </div>
+
+          <!-- PC端右侧热门推荐区 -->
+          <div class="pc-content">
+            <div id="pcHotSection" style="display: none">
+              <div class="pc-header">
+                <div class="pc-header-left">
+                  <h2 class="pc-title">🔥 热门推荐</h2>
+                  <span class="pc-count" id="pcHotCount"></span>
+                </div>
+                <button class="pc-more-btn" onclick="switchTab('hot')">更多 &gt;</button>
+              </div>
+              <div class="pc-product-grid" id="hotProducts"></div>
+            </div>
+            <div id="pcEmptyHot" class="empty-state" style="display: none">
+              <div class="empty-icon">🔥</div>
+              <p>暂无热门推荐</p>
+            </div>
+            <!-- PC端新品推荐区 -->
+            <div id="pcNewSection" style="display: none">
+              <div class="pc-header" style="margin-top: 32px">
+                <div class="pc-header-left">
+                  <h2 class="pc-title">🆕 新品推荐</h2>
+                  <span class="pc-count" id="pcNewCount"></span>
+                </div>
+                <button class="pc-more-btn" onclick="switchTab('new')">更多 &gt;</button>
+              </div>
+              <div class="pc-new-grid" id="pcNewProducts"></div>
+            </div>
+            <div id="pcEmptyNew" class="empty-state" style="display: none">
+              <div class="empty-icon">🆕</div>
+              <p>暂无新品推荐</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 移动端内容 -->
+        <div class="mobile-content">
+          <!-- 搜索栏（点击跳转分类页） -->
+          <div class="home-search-wrap">
+            <div class="home-search-bar" onclick="switchTab('category')">
+              <span class="home-search-icon">🔍</span>
+              <span class="home-search-text">搜索商品...</span>
+            </div>
+          </div>
+
+          <!-- 移动端轮播图 -->
+          <div class="swiper-container mobile-swiper" id="mobileSwiper">
+            <div class="swiper-wrapper" id="mobileSwiperWrapper">
+              <!-- 移动端轮播图由JS生成 -->
+            </div>
+            <div class="swiper-pagination" id="mobileSwiperPagination"></div>
+          </div>
+
+          <!-- 热门推荐区 -->
+          <div class="section" id="mobileHotSection" style="display: none">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="title-icon">🔥</span>
+                热门推荐
+              </h2>
+              <button class="section-more-btn" onclick="switchTab('hot')">更多 &gt;</button>
+            </div>
+            <div class="product-grid" id="mobileHotProducts">
+              <!-- 热门商品由JS生成 -->
+            </div>
+          </div>
+
+          <!-- 新品推荐区 -->
+          <div class="section" id="mobileNewSection" style="display: none">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="title-icon">🆕</span>
+                新品推荐
+              </h2>
+              <button class="section-more-btn" onclick="switchTab('new')">更多 &gt;</button>
+            </div>
+            <div class="new-card-grid" id="mobileNewProducts">
+              <!-- 新品图片由JS生成 -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分类页（移动端） -->
+      <div class="tab-page" id="page-category">
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="搜索商品名称、品牌..."
+            id="searchInput"
+            oninput="searchProducts(this.value)"
+          />
+        </div>
+
+        <!-- 分类筛选 -->
+        <div class="category-filter">
+          <div class="filter-scroll">
+            <button
+              class="category-btn active"
+              data-category="all"
+              onclick="selectCategory('all')"
+            >
+              全部
+            </button>
+            <button
+              class="category-btn"
+              data-category="电子烟烟弹"
+              onclick="selectCategory('电子烟烟弹')"
+            >
+              烟弹
+            </button>
+            <button
+              class="category-btn"
+              data-category="电子烟烟具"
+              onclick="selectCategory('电子烟烟具')"
+            >
+              烟具
+            </button>
+            <button
+              class="category-btn"
+              data-category="电子烟一次性"
+              onclick="selectCategory('电子烟一次性')"
+            >
+              一次性
+            </button>
+            <button
+              class="category-btn"
+              data-category="电子烟套装"
+              onclick="selectCategory('电子烟套装')"
+            >
+              套装
+            </button>
+            <button
+              class="category-btn"
+              data-category="其他"
+              onclick="selectCategory('其他')"
+            >
+              其他
+            </button>
+          </div>
+        </div>
+
+        <!-- 视图切换 + 商品统计 -->
+        <div class="category-toolbar">
+          <div class="category-header">
+            <span class="category-title" id="categoryTitle">全部商品</span>
+            <span class="category-count" id="categoryCount">0 件</span>
+          </div>
+          <button
+            class="view-toggle-btn"
+            id="viewToggleBtn"
+            onclick="toggleViewMode()"
+            title="切换视图"
+          >
+            <!-- 网格图标（默认） -->
+            <svg
+              id="iconGrid"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              style="display: block"
+            >
+              <rect x="1.5" y="1.5" width="7.5" height="7.5" rx="1.5" />
+              <rect x="11" y="1.5" width="7.5" height="7.5" rx="1.5" />
+              <rect x="1.5" y="11" width="7.5" height="7.5" rx="1.5" />
+              <rect x="11" y="11" width="7.5" height="7.5" rx="1.5" />
+            </svg>
+            <!-- 列表图标（隐藏） -->
+            <svg
+              id="iconList"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              style="display: none"
+            >
+              <rect x="1.5" y="3" width="17" height="3.5" rx="1.5" />
+              <rect x="1.5" y="8.25" width="17" height="3.5" rx="1.5" />
+              <rect x="1.5" y="13.5" width="17" height="3.5" rx="1.5" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="category-container">
+          <!-- 左侧品牌列表 -->
+          <div class="category-left" id="categoryLeft">
+            <div
+              class="brand-item active"
+              data-brand="all"
+              onclick="selectCategoryBrand('all')"
+            >
+              <span class="brand-name">全部品牌</span>
+            </div>
+          </div>
+
+          <!-- 右侧商品列表 -->
+          <div class="category-right" id="categoryRight">
+            <div class="category-products" id="categoryProducts"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 热门推荐列表页 -->
+      <div class="tab-page" id="page-hot">
+        <div class="special-list-header">
+          <button class="special-back-btn" onclick="switchTab('home')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M12.5 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            返回
+          </button>
+          <h1 class="special-list-title">🔥 热门推荐</h1>
+          <span class="special-list-count" id="hotListCount"></span>
+        </div>
+        <div class="special-list-toolbar">
+          <span class="special-list-label">共 <strong id="hotTotalCount">0</strong> 件商品</span>
+        </div>
+        <div class="special-product-grid" id="hotListProducts"></div>
+        <div id="hotListEmpty" class="empty-state" style="display:none;">
+          <div class="empty-icon">🔥</div>
+          <p>暂无热门推荐商品</p>
+        </div>
+      </div>
+
+      <!-- 新品推荐列表页 -->
+      <div class="tab-page" id="page-new">
+        <div class="special-list-header">
+          <button class="special-back-btn" onclick="switchTab('home')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M12.5 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            返回
+          </button>
+          <h1 class="special-list-title">🆕 新品推荐</h1>
+        </div>
+        <div class="special-list-toolbar">
+          <span class="special-list-label">共 <strong id="newTotalCount">0</strong> 个推荐</span>
+        </div>
+        <div class="new-list-grid" id="newListProducts"></div>
+        <div id="newListEmpty" class="empty-state" style="display:none;">
+          <div class="empty-icon">🆕</div>
+          <p>暂无新品推荐</p>
+        </div>
+      </div>
+
+      <!-- 科普页 -->
+      <div class="tab-page" id="page-science">
+        <div class="science-container" id="scienceContainer">
+          <!-- 科普列表由JS渲染 -->
+        </div>
+      </div>
+
+      <!-- 关于我们页 -->
+      <div class="tab-page" id="page-about">
+        <div id="aboutPageContent">
+          <!-- 由 JS 动态渲染 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 商品详情页（脱离page-container，单独占满屏幕） -->
+    <div id="page-detail">
+      <div class="detail-page" id="detailPageContent">
+        <!-- 详情内容由JS渲染 -->
+      </div>
+    </div>
+
+    <!-- 底部Tab导航（移动端） -->
+    <nav class="tab-bar">
+      <button
+        class="tab-item active"
+        data-tab="home"
+        onclick="switchTab('home')"
+      >
+        <span class="tab-icon">🏠</span>
+        <span class="tab-text">首页</span>
+      </button>
+      <button
+        class="tab-item"
+        data-tab="category"
+        onclick="switchTab('category')"
+      >
+        <span class="tab-icon">📋</span>
+        <span class="tab-text">分类</span>
+      </button>
+      <button
+        class="tab-item"
+        data-tab="hot"
+        onclick="switchTab('hot')"
+      >
+        <span class="tab-icon">🔥</span>
+        <span class="tab-text">热门</span>
+      </button>
+      <button
+        class="tab-item"
+        data-tab="new"
+        onclick="switchTab('new')"
+      >
+        <span class="tab-icon">🆕</span>
+        <span class="tab-text">新品</span>
+      </button>
+      <button
+        class="tab-item"
+        data-tab="science"
+        onclick="switchTab('science')"
+      >
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">科普</span>
+      </button>
+      <button class="tab-item" data-tab="about" onclick="switchTab('about')">
+        <span class="tab-icon">ℹ️</span>
+        <span class="tab-text">联系店主</span>
+      </button>
+    </nav>
+
+    <!-- 返回顶部按钮 -->
+    <button
+      class="back-to-top"
+      id="backToTopBtn"
+      onclick="scrollToTop()"
+      title="返回顶部"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path
+          d="M10 4l-7 7h4v7h6v-7h4z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
+    <!-- 联系店主弹窗 -->
+    <div class="contact-modal" id="contactModal" onclick="closeContactModal(event)">
+      <div class="contact-modal-content" onclick="event.stopPropagation()">
+        <button class="contact-modal-close" onclick="closeContactModal()">×</button>
+        <h3 class="contact-modal-title">💬 联系店主</h3>
+        <div class="contact-modal-body" id="contactModalBody">
+          <!-- 动态内容 -->
+        </div>
+      </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
