@@ -68,7 +68,8 @@ function frontendDbLoad(key) {
     const store = transaction.objectStore("shop_data");
     const request = store.get(key);
     request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result ? request.result.data : null);
+    request.onsuccess = () =>
+      resolve(request.result ? request.result.data : null);
   });
 }
 
@@ -92,7 +93,7 @@ async function loadProductsData() {
   dataLoadPromise = (async () => {
     // 1. 首先加载静态 data.js（这是最重要的数据源，用于打包部署场景）
     let staticData = null;
-    if (typeof PRODUCTS_DATA !== 'undefined' && PRODUCTS_DATA) {
+    if (typeof PRODUCTS_DATA !== "undefined" && PRODUCTS_DATA) {
       staticData = {
         showPrice: PRODUCTS_DATA.showPrice !== false,
         banners: PRODUCTS_DATA.banners || [],
@@ -105,13 +106,15 @@ async function loadProductsData() {
       };
       // 使用静态数据作为基础
       cachedProductsData = staticData;
-      console.log('[数据加载] 静态 data.js 加载成功:', {
-        brands: staticData.brands.length + ' 个品牌',
-        products: staticData.products.length + ' 个商品',
-        banners: staticData.banners.length + ' 个横幅'
+      console.log("[数据加载] 静态 data.js 加载成功:", {
+        brands: staticData.brands.length + " 个品牌",
+        products: staticData.products.length + " 个商品",
+        banners: staticData.banners.length + " 个横幅",
       });
     } else {
-      console.warn('[数据加载] 警告: PRODUCTS_DATA 未定义，请确保 data.js 已正确加载');
+      console.warn(
+        "[数据加载] 警告: PRODUCTS_DATA 未定义，请确保 data.js 已正确加载",
+      );
     }
 
     // 2. 尝试从 IndexedDB 读取实时数据（用于后台预览模式）
@@ -121,22 +124,42 @@ async function loadProductsData() {
       }
       const dbData = await Promise.race([
         frontendDbLoad("shop_data"),
-        new Promise((_, reject) => setTimeout(() => reject(new Error("IndexedDB timeout")), 2000))
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("IndexedDB timeout")), 2000),
+        ),
       ]);
       if (dbData) {
         // IndexedDB 有数据，合并到静态数据中
         const mergedData = {
-          showPrice: dbData.showPrice !== undefined ? dbData.showPrice : staticData?.showPrice,
-          banners: dbData.banners?.length > 0 ? dbData.banners : (staticData?.banners || []),
-          brands: dbData.brands?.length > 0 ? dbData.brands : (staticData?.brands || []),
-          products: dbData.products?.length > 0 ? dbData.products : (staticData?.products || []),
-          articles: dbData.articles?.length > 0 ? dbData.articles : (staticData?.articles || []),
+          showPrice:
+            dbData.showPrice !== undefined
+              ? dbData.showPrice
+              : staticData?.showPrice,
+          banners:
+            dbData.banners?.length > 0
+              ? dbData.banners
+              : staticData?.banners || [],
+          brands:
+            dbData.brands?.length > 0
+              ? dbData.brands
+              : staticData?.brands || [],
+          products:
+            dbData.products?.length > 0
+              ? dbData.products
+              : staticData?.products || [],
+          articles:
+            dbData.articles?.length > 0
+              ? dbData.articles
+              : staticData?.articles || [],
           about: dbData.about || staticData?.about || null,
           notice: dbData.about?.notice || staticData?.notice || "",
-          newProducts: dbData.newProducts?.length > 0 ? dbData.newProducts : (staticData?.newProducts || []),
+          newProducts:
+            dbData.newProducts?.length > 0
+              ? dbData.newProducts
+              : staticData?.newProducts || [],
         };
         cachedProductsData = mergedData;
-        console.log('[数据加载] IndexedDB 数据合并成功');
+        console.log("[数据加载] IndexedDB 数据合并成功");
         return cachedProductsData;
       }
     } catch (e) {
@@ -173,7 +196,7 @@ function getProductsData() {
     return cachedProductsData;
   }
   // 立即返回静态数据，保证首屏渲染
-  if (typeof PRODUCTS_DATA !== 'undefined' && PRODUCTS_DATA) {
+  if (typeof PRODUCTS_DATA !== "undefined" && PRODUCTS_DATA) {
     return {
       showPrice: PRODUCTS_DATA.showPrice !== false,
       banners: PRODUCTS_DATA.banners || [],
@@ -186,7 +209,7 @@ function getProductsData() {
     };
   }
   // 如果连静态数据都没有，返回空数据
-  console.error('[数据加载] 错误: 无法获取商品数据，PRODUCTS_DATA 未定义');
+  console.error("[数据加载] 错误: 无法获取商品数据，PRODUCTS_DATA 未定义");
   return {
     showPrice: true,
     banners: [],
@@ -215,7 +238,7 @@ function getEnabledProducts() {
     }
     // 如果商品没有品牌或者品牌不在列表中，检查是否有 brandName
     // 只要有 brandName 就显示（避免数据不匹配导致商品消失）
-    return p.brandName && p.brandName !== '其他';
+    return p.brandName && p.brandName !== "其他";
   });
 }
 
@@ -442,22 +465,34 @@ function initCategoryLeftScroll() {
   let scrollTop = 0;
   let isScrolling = false;
 
-  categoryLeft.addEventListener("touchstart", function (e) {
-    startY = e.touches[0].pageY;
-    scrollTop = categoryLeft.scrollTop;
-    isScrolling = true;
-  }, { passive: true });
+  categoryLeft.addEventListener(
+    "touchstart",
+    function (e) {
+      startY = e.touches[0].pageY;
+      scrollTop = categoryLeft.scrollTop;
+      isScrolling = true;
+    },
+    { passive: true },
+  );
 
-  categoryLeft.addEventListener("touchmove", function (e) {
-    if (!isScrolling) return;
-    const currentY = e.touches[0].pageY;
-    const diff = startY - currentY;
-    categoryLeft.scrollTop = scrollTop + diff;
-  }, { passive: true });
+  categoryLeft.addEventListener(
+    "touchmove",
+    function (e) {
+      if (!isScrolling) return;
+      const currentY = e.touches[0].pageY;
+      const diff = startY - currentY;
+      categoryLeft.scrollTop = scrollTop + diff;
+    },
+    { passive: true },
+  );
 
-  categoryLeft.addEventListener("touchend", function () {
-    isScrolling = false;
-  }, { passive: true });
+  categoryLeft.addEventListener(
+    "touchend",
+    function () {
+      isScrolling = false;
+    },
+    { passive: true },
+  );
 }
 
 // 异步加载数据并更新页面
@@ -549,7 +584,7 @@ function renderNotice() {
   }
 
   // 支持多行，每行一个公告
-  const notices = noticeText.split("\n").filter(n => n.trim());
+  const notices = noticeText.split("\n").filter((n) => n.trim());
   if (notices.length === 0) {
     document.getElementById("noticeBar").style.display = "none";
     return;
@@ -558,14 +593,17 @@ function renderNotice() {
   // 复制一份实现无缝循环
   const allNotices = [...notices, ...notices];
   const html = allNotices
-    .map((n, i) => `<span class="notice-item">${escapeHtml(n.trim())}${i < allNotices.length - 1 ? '<span class="notice-sep">|</span>' : ''}</span>`)
+    .map(
+      (n, i) =>
+        `<span class="notice-item">${escapeHtml(n.trim())}${i < allNotices.length - 1 ? '<span class="notice-sep">|</span>' : ""}</span>`,
+    )
     .join("");
 
   document.getElementById("noticeScroll").innerHTML = html;
 
   // 速度随公告数量调整
   const duration = Math.max(12, notices.length * 8);
-  document.querySelectorAll(".notice-scroll").forEach(el => {
+  document.querySelectorAll(".notice-scroll").forEach((el) => {
     el.style.animationDuration = duration + "s";
   });
 
@@ -761,12 +799,16 @@ function renderPCBrands() {
   const allProducts = getProductsData().products;
 
   // 计算全部商品数量（只统计有品牌名称的）
-  const totalCount = allProducts.filter(p => p.brandName && p.brandName !== '其他').length;
+  const totalCount = allProducts.filter(
+    (p) => p.brandName && p.brandName !== "其他",
+  ).length;
 
   let html = `<div class="pc-brand-item ${currentCategoryBrand === "all" ? "active" : ""}" data-brand="all" onclick="selectCategoryBrand('all')"><span class="pc-brand-text">全部商品</span><span class="pc-brand-count">${totalCount}</span></div>`;
 
   brands.forEach((brand) => {
-    const productCount = allProducts.filter(p => p.brand === brand.id || p.brandName === brand.name).length;
+    const productCount = allProducts.filter(
+      (p) => p.brand === brand.id || p.brandName === brand.name,
+    ).length;
     html += `<div class="pc-brand-item ${currentCategoryBrand === brand.id ? "active" : ""}" data-brand="${brand.id}" onclick="selectCategoryBrand('${brand.id}')"><span class="pc-brand-text">${brand.name}</span><span class="pc-brand-count">${productCount}</span></div>`;
   });
 
@@ -1672,7 +1714,7 @@ function showContactModal() {
       `;
     }
 
-    content += '</div>';
+    content += "</div>";
     body.innerHTML = content;
   }
 
@@ -1685,16 +1727,19 @@ function closeContactModal(event) {
 }
 
 function copyWechatId(id) {
-  navigator.clipboard.writeText(id).then(() => {
-    showToast("微信号已复制");
-  }).catch(() => {
-    // 降级方案
-    const textarea = document.createElement("textarea");
-    textarea.value = id;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-    showToast("微信号已复制");
-  });
+  navigator.clipboard
+    .writeText(id)
+    .then(() => {
+      showToast("微信号已复制");
+    })
+    .catch(() => {
+      // 降级方案
+      const textarea = document.createElement("textarea");
+      textarea.value = id;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      showToast("微信号已复制");
+    });
 }

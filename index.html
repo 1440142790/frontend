@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>国标电子烟产品介绍</title>
+    <title>国标产品介绍（点击查看）</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
@@ -103,7 +103,9 @@
                   <h2 class="pc-title">🔥 热门推荐</h2>
                   <span class="pc-count" id="pcHotCount"></span>
                 </div>
-                <button class="pc-more-btn" onclick="switchTab('hot')">更多 &gt;</button>
+                <button class="pc-more-btn" onclick="switchTab('hot')">
+                  更多 &gt;
+                </button>
               </div>
               <div class="pc-product-grid" id="hotProducts"></div>
             </div>
@@ -118,7 +120,9 @@
                   <h2 class="pc-title">🆕 新品推荐</h2>
                   <span class="pc-count" id="pcNewCount"></span>
                 </div>
-                <button class="pc-more-btn" onclick="switchTab('new')">更多 &gt;</button>
+                <button class="pc-more-btn" onclick="switchTab('new')">
+                  更多 &gt;
+                </button>
               </div>
               <div class="pc-new-grid" id="pcNewProducts"></div>
             </div>
@@ -154,7 +158,9 @@
                 <span class="title-icon">🔥</span>
                 热门推荐
               </h2>
-              <button class="section-more-btn" onclick="switchTab('hot')">更多 &gt;</button>
+              <button class="section-more-btn" onclick="switchTab('hot')">
+                更多 &gt;
+              </button>
             </div>
             <div class="product-grid" id="mobileHotProducts">
               <!-- 热门商品由JS生成 -->
@@ -168,7 +174,9 @@
                 <span class="title-icon">🆕</span>
                 新品推荐
               </h2>
-              <button class="section-more-btn" onclick="switchTab('new')">更多 &gt;</button>
+              <button class="section-more-btn" onclick="switchTab('new')">
+                更多 &gt;
+              </button>
             </div>
             <div class="new-card-grid" id="mobileNewProducts">
               <!-- 新品图片由JS生成 -->
@@ -304,7 +312,14 @@
         <div class="special-list-header">
           <button class="special-back-btn" onclick="switchTab('home')">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M12.5 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M12.5 5l-5 5 5 5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             返回
           </button>
@@ -312,10 +327,12 @@
           <span class="special-list-count" id="hotListCount"></span>
         </div>
         <div class="special-list-toolbar">
-          <span class="special-list-label">共 <strong id="hotTotalCount">0</strong> 件商品</span>
+          <span class="special-list-label"
+            >共 <strong id="hotTotalCount">0</strong> 件商品</span
+          >
         </div>
         <div class="special-product-grid" id="hotListProducts"></div>
-        <div id="hotListEmpty" class="empty-state" style="display:none;">
+        <div id="hotListEmpty" class="empty-state" style="display: none">
           <div class="empty-icon">🔥</div>
           <p>暂无热门推荐商品</p>
         </div>
@@ -326,17 +343,26 @@
         <div class="special-list-header">
           <button class="special-back-btn" onclick="switchTab('home')">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M12.5 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M12.5 5l-5 5 5 5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             返回
           </button>
           <h1 class="special-list-title">🆕 新品推荐</h1>
         </div>
         <div class="special-list-toolbar">
-          <span class="special-list-label">共 <strong id="newTotalCount">0</strong> 个推荐</span>
+          <span class="special-list-label"
+            >共 <strong id="newTotalCount">0</strong> 个推荐</span
+          >
         </div>
         <div class="new-list-grid" id="newListProducts"></div>
-        <div id="newListEmpty" class="empty-state" style="display:none;">
+        <div id="newListEmpty" class="empty-state" style="display: none">
           <div class="empty-icon">🆕</div>
           <p>暂无新品推荐</p>
         </div>
@@ -361,8 +387,17 @@
     <div id="page-detail">
       <!-- 悬浮返回按钮 -->
       <button class="detail-float-back" id="detailFloatBack" onclick="goBack()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M15 18l-6-6 6-6"/>
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
       <div class="detail-page" id="detailPageContent">
@@ -388,19 +423,11 @@
         <span class="tab-icon">📋</span>
         <span class="tab-text">分类</span>
       </button>
-      <button
-        class="tab-item"
-        data-tab="hot"
-        onclick="switchTab('hot')"
-      >
+      <button class="tab-item" data-tab="hot" onclick="switchTab('hot')">
         <span class="tab-icon">🔥</span>
         <span class="tab-text">热门</span>
       </button>
-      <button
-        class="tab-item"
-        data-tab="new"
-        onclick="switchTab('new')"
-      >
+      <button class="tab-item" data-tab="new" onclick="switchTab('new')">
         <span class="tab-icon">🆕</span>
         <span class="tab-text">新品</span>
       </button>
@@ -437,9 +464,15 @@
     </button>
 
     <!-- 联系店主弹窗 -->
-    <div class="contact-modal" id="contactModal" onclick="closeContactModal(event)">
+    <div
+      class="contact-modal"
+      id="contactModal"
+      onclick="closeContactModal(event)"
+    >
       <div class="contact-modal-content" onclick="event.stopPropagation()">
-        <button class="contact-modal-close" onclick="closeContactModal()">×</button>
+        <button class="contact-modal-close" onclick="closeContactModal()">
+          ×
+        </button>
         <h3 class="contact-modal-title">💬 联系店主</h3>
         <div class="contact-modal-body" id="contactModalBody">
           <!-- 动态内容 -->

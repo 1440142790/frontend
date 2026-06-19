@@ -1,10 +1,10 @@
 // 商品数据 - 由后台管理系统自动生成
-// 更新时间：2026/6/19 15:04:24
+// 更新时间：2026/6/19 16:28:58
 // 注意：此文件由后台"📤 导出 data.js"按钮自动生成，请勿手动修改
 
 const PRODUCTS_DATA = {
     "version": "2026-06-19",
-    "updateTime": "2026/6/19 13:20:08",
+    "updateTime": "2026/6/19 16:26:11",
     "showPrice": false,
     "brands": [
         {
@@ -485,7 +485,7 @@ const PRODUCTS_DATA = {
             "flavors": "",
             "stock": 999,
             "status": "in_stock",
-            "isHot": true,
+            "isHot": false,
             "sort": 9,
             "nicotineLevel": "",
             "totalNicotine": "",
