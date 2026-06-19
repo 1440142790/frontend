@@ -402,6 +402,8 @@ document.addEventListener("DOMContentLoaded", function () {
   loadProductsDataAsync().then(() => {
     // 数据加载完成后隐藏加载提示
     hideLoadingOverlay();
+    // 初始化左侧品牌栏触摸滚动
+    initCategoryLeftScroll();
   });
 
   // 返回顶部按钮显示/隐藏
@@ -430,6 +432,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// 左侧品牌栏触摸滚动增强
+function initCategoryLeftScroll() {
+  const categoryLeft = document.getElementById("categoryLeft");
+  if (!categoryLeft) return;
+
+  let startY = 0;
+  let scrollTop = 0;
+  let isScrolling = false;
+
+  categoryLeft.addEventListener("touchstart", function (e) {
+    startY = e.touches[0].pageY;
+    scrollTop = categoryLeft.scrollTop;
+    isScrolling = true;
+  }, { passive: true });
+
+  categoryLeft.addEventListener("touchmove", function (e) {
+    if (!isScrolling) return;
+    const currentY = e.touches[0].pageY;
+    const diff = startY - currentY;
+    categoryLeft.scrollTop = scrollTop + diff;
+  }, { passive: true });
+
+  categoryLeft.addEventListener("touchend", function () {
+    isScrolling = false;
+  }, { passive: true });
+}
 
 // 异步加载数据并更新页面
 async function loadProductsDataAsync() {
@@ -755,17 +784,10 @@ function renderCategoryBrands() {
   const container = document.getElementById("categoryLeft");
   const brands = getEnabledBrands();
 
-  // 截取品牌名后5个字
-  const getDisplayName = (name) => {
-    if (!name) return '';
-    return name.length > 5 ? name.slice(-5) : name;
-  };
-
   let html = `<div class="brand-item ${currentCategoryBrand === "all" ? "active" : ""}" data-brand="all" onclick="selectCategoryBrand('all')"><span class="brand-name">全部</span></div>`;
 
   brands.forEach((brand) => {
-    const displayName = getDisplayName(brand.name);
-    html += `<div class="brand-item ${currentCategoryBrand === brand.id ? "active" : ""}" data-brand="${brand.id}" onclick="selectCategoryBrand('${brand.id}')" title="${brand.name}"><span class="brand-name">${displayName}</span></div>`;
+    html += `<div class="brand-item ${currentCategoryBrand === brand.id ? "active" : ""}" data-brand="${brand.id}" onclick="selectCategoryBrand('${brand.id}')" title="${brand.name}"><span class="brand-name">${brand.name}</span></div>`;
   });
 
   container.innerHTML = html;
