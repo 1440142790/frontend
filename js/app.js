@@ -474,6 +474,16 @@ function scrollToTop() {
 function switchTab(tabName) {
   currentTab = tabName;
 
+  // 如果详情页在显示，先关闭详情页
+  const detailPage = document.getElementById("page-detail");
+  if (detailPage.classList.contains("active")) {
+    detailPage.classList.remove("active");
+    if (detailSwiperTimer) {
+      clearInterval(detailSwiperTimer);
+      detailSwiperTimer = null;
+    }
+  }
+
   document.querySelectorAll(".tab-page").forEach((page) => {
     page.classList.remove("active");
   });
@@ -663,8 +673,10 @@ function renderPCHotProducts(hotProducts) {
   displayProducts.forEach((product) => {
     html += `
             <div class="pc-product-card" onclick="openProductDetail('${product.id}')">
-                <img class="pc-product-image" src="${product.image}" alt="${product.name}"
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📦</text></svg>'">
+                <div class="pc-product-image-wrap">
+                    <img class="pc-product-image" src="${product.image}" alt="${product.name}"
+                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📦</text></svg>'">
+                </div>
                 <div class="pc-product-info">
                     <div class="pc-product-name">🔥 ${product.name}</div>
                     <div class="pc-product-brand">${product.brandName || ""}</div>
@@ -696,8 +708,10 @@ function renderMobileHotProducts(hotProducts) {
   displayProducts.forEach((product) => {
     html += `
             <div class="product-card" onclick="openProductDetail('${product.id}')">
-                <img class="product-image" src="${product.image}" alt="${product.name}"
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📦</text></svg>'">
+                <div class="product-image-wrap">
+                    <img class="product-image" src="${product.image}" alt="${product.name}"
+                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📦</text></svg>'">
+                </div>
                 <div class="product-info">
                     <div class="product-name">🔥 ${product.name}</div>
                     <div class="product-brand">${product.brandName || ""}</div>
@@ -740,16 +754,18 @@ function renderCategoryPage() {
 function renderCategoryBrands() {
   const container = document.getElementById("categoryLeft");
   const brands = getEnabledBrands();
-  const allProducts = getProductsData().products;
 
-  // 计算全部商品数量（只统计有品牌名称的）
-  const totalCount = allProducts.filter(p => p.brandName && p.brandName !== '其他').length;
+  // 截取品牌名后5个字
+  const getDisplayName = (name) => {
+    if (!name) return '';
+    return name.length > 5 ? name.slice(-5) : name;
+  };
 
-  let html = `<div class="brand-item ${currentCategoryBrand === "all" ? "active" : ""}" data-brand="all" onclick="selectCategoryBrand('all')"><span class="brand-name">全部品牌</span><span class="brand-count">${totalCount}</span></div>`;
+  let html = `<div class="brand-item ${currentCategoryBrand === "all" ? "active" : ""}" data-brand="all" onclick="selectCategoryBrand('all')"><span class="brand-name">全部</span></div>`;
 
   brands.forEach((brand) => {
-    const productCount = allProducts.filter(p => p.brand === brand.id || p.brandName === brand.name).length;
-    html += `<div class="brand-item ${currentCategoryBrand === brand.id ? "active" : ""}" data-brand="${brand.id}" onclick="selectCategoryBrand('${brand.id}')"><span class="brand-name">${brand.name}</span><span class="brand-count">${productCount}</span></div>`;
+    const displayName = getDisplayName(brand.name);
+    html += `<div class="brand-item ${currentCategoryBrand === brand.id ? "active" : ""}" data-brand="${brand.id}" onclick="selectCategoryBrand('${brand.id}')" title="${brand.name}"><span class="brand-name">${displayName}</span></div>`;
   });
 
   container.innerHTML = html;
@@ -778,9 +794,9 @@ function selectCategoryBrand(brandId) {
       : "";
   document.getElementById("categoryTitle").textContent = brand
     ? categoryLabel
-      ? `${brand.name} - ${categoryLabel}`
+      ? `${brand.name} · ${categoryLabel}`
       : brand.name
-    : "全部商品";
+    : categoryLabel || "全部分类";
 
   // 筛选并渲染商品（保留搜索关键词和分类筛选）
   filterAndRenderProducts();
@@ -856,8 +872,10 @@ function renderMobileCategoryProducts(products) {
     products.forEach((product) => {
       html += `
                 <div class="product-card" onclick="openProductDetail('${product.id}')">
-                    <img class="product-image" src="${product.image}" alt="${product.name}"
-                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📦</text></svg>'">
+                    <div class="product-image-wrap">
+                        <img class="product-image" src="${product.image}" alt="${product.name}"
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📦</text></svg>'">
+                    </div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
                         <div class="product-brand">${product.brandName || ""}</div>
@@ -1077,8 +1095,10 @@ function renderNewList() {
 function buildProductCard(product) {
   return `
     <div class="product-card" onclick="openProductDetail('${product.id}')">
-        <img class="product-image" src="${product.image}" alt="${product.name}"
-             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📦</text></svg>'">
+        <div class="product-image-wrap">
+            <img class="product-image" src="${product.image}" alt="${product.name}"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📦</text></svg>'">
+        </div>
         <div class="product-info">
             <div class="product-name">${product.name}</div>
             <div class="product-brand">${product.brandName || ""}</div>
@@ -1273,7 +1293,7 @@ function openProductDetail(productId) {
   document
     .querySelectorAll(".tab-item")
     .forEach((t) => t.classList.remove("active"));
-  document.getElementById("pageContainer").style.display = "none";
+  document.getElementById("pageContainer").scrollTop = 0;
   document.getElementById("page-detail").scrollTop = 0;
 
   // 初始化详情页轮播
@@ -1360,7 +1380,6 @@ function updateDetailSwiperUI(slides, dots, count) {
 function goBack() {
   document.getElementById("page-detail").scrollTop = 0;
   document.getElementById("page-detail").classList.remove("active");
-  document.getElementById("pageContainer").style.display = "";
   const lastPage = window._lastPage || "category";
   document.getElementById("page-" + lastPage).classList.add("active");
   document.querySelectorAll(".tab-item").forEach((t) => {
